@@ -1,13 +1,17 @@
 {
-  "name": "note-taker",
+  "name": "express-notes",
   "version": "1.0.0",
-  "description": "",
+  "description": "A note-taking app controlled using express.js",
   "main": "server.js",
   "scripts": {
     "test": "jest"
   },
-  "author": "",
+  "author": "Nat Poulson",
   "license": "ISC",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/natpoulson/express-notes"
+  },
   "dependencies": {
     "express": "^4.16.4"
   },
