@@ -4,6 +4,7 @@
   "description": "A note-taking app controlled using express.js",
   "main": "server.js",
   "scripts": {
+    "start": "node server.js",
     "test": "jest"
   },
   "author": "Nat Poulson",
@@ -16,6 +17,7 @@
     "express": "^4.16.4"
   },
   "devDependencies": {
-    "jest": "^29.7.0"
+    "jest": "^29.7.0",
+    "supertest": "^6.3.4"
   }
 }
