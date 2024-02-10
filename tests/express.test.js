@@ -7,12 +7,12 @@ describe('Express.js', () => {
         it('root (/) returns public/index.html', async () => {
             const comparison = await fs.readFile('./public/index.html', {encoding: 'utf-8'}, err => undefined);
             const res = await request(app).get('/');
-            expect(res.body).toEqual(comparison);
+            expect(res.text).toEqual(comparison);
         });
         it('notes (/notes) returns public/notes.html', async () => {
             const comparison = await fs.readFile('./public/notes.html', {encoding: 'utf-8'}, err => undefined);
             const res = await request(app).get('/notes');
-            expect(res.body).toEqual(comparison);
+            expect(res.text).toEqual(comparison);
         });
     });
     describe('API Routes', () => {
