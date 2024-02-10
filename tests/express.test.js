@@ -1,17 +1,17 @@
 const fs = require('fs/promises');
 const request = require('supertest');
-const app = require('../server');
+const app = require('../app');
 
 describe('Express.js', () => {
     describe('Public Routes', () => {
         it('root (/) returns public/index.html', async () => {
-            const comparison = await fs.readFile('../public/index.html', {encoding: 'utf-8'}, err => undefined);
+            const comparison = await fs.readFile('./public/index.html', {encoding: 'utf-8'}, err => undefined);
             const res = await request(app).get('/');
             expect(res.body).toEqual(comparison);
         });
-        it('pages (/pages) returns public/pages.html', async () => {
-            const comparison = await fs.readFile('../public/pages.html', {encoding: 'utf-8'}, err => undefined);
-            const res = await request(app).get('/pages');
+        it('notes (/notes) returns public/notes.html', async () => {
+            const comparison = await fs.readFile('./public/notes.html', {encoding: 'utf-8'}, err => undefined);
+            const res = await request(app).get('/notes');
             expect(res.body).toEqual(comparison);
         });
     });
