@@ -1,8 +1,6 @@
 const fs = require('fs/promises');
 const request = require('supertest');
-const express = require('express');
-
-const app = express();
+const app = require('../server');
 
 describe('Express.js', () => {
     describe('Public Routes', () => {

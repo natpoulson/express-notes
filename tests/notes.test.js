@@ -1,12 +1,11 @@
 // Declare required modules
 const fs = require('fs/promises');
 const request = require('supertest');
-const express = require('express');
+const app = require('../server');
 
-const app = express();
 const dataSet = async () => JSON.parse(await fs.readFile('../db/test.json', {encoding: 'utf-8'}));
 
-describe('Notes API'), () => {
+describe('Notes API', () => {
     describe('GET', () => {
         it('/apis/notes returns an array of notes', async () => {
             const sample = await dataSet();
@@ -28,7 +27,7 @@ describe('Notes API'), () => {
     describe('POST', () => {
         it('/apis/notes adds a new note', async () => {
             const rand = Math.floor((Math.random() * 1024) + 1024);
-            const res = await request(app).post('/apis/notes').body({title:"test", text:`${rand}`});
+            const res = await request(app).post('/apis/notes').send({title:"test", text:`${rand}`});
             expect(res.statusCode).toBe(200);
             const sample = await dataSet();
             expect(res.body.text).toEqual(sample[sample.length - 1].text)
@@ -52,4 +51,4 @@ describe('Notes API'), () => {
             expect(res.statusCode).not.toBe(200);
         });
     });
-};
+});
