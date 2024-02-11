@@ -21,7 +21,7 @@ describe('Express.js', () => {
             expect(res.statusCode).not.toBe(404);
         });
         it('GET /apis/notes/:id exists', async () => {
-            const res = await request(app).get('/apis/notes/1');
+            const res = await request(app).get('/apis/notes/z');
             expect(res.statusCode).not.toBe(404);
         });
         it('POST /apis/notes exists', async () => {

@@ -1,17 +1,18 @@
 // This file separates express.js declarations and routes from the server.js file in order to allow testing to operate
 // Otherwise it causes jest to hang indefinitely
 const express = require('express');
-const router = require('./routes/index');
+const api = require('./routes/index.js');
 const path = require('path');
 
 // Bind Express functions
 const app = express();
 
-// Implement json middleware
+// Implement json and URL encoding middleware
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Implement routes folder
-app.use('/apis', router);
+app.use('/apis', api);
 
 // Bind public page route
 app.use(express.static(path.join(__dirname, 'public')));

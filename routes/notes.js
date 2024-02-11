@@ -63,7 +63,7 @@ function isValidID(id) {
 // Parse the index as a number and subtract from 1 to use in zero-index arrays
 // Return undefined if the adjusted index would be negative
 function parseIndex(index) {
-    const adjustedIndex = Number.parseInt(index)--;
+    const adjustedIndex = (Number.parseInt(index) - 1);
     if (adjustedIndex < 0) {
         return undefined;
     }
