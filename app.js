@@ -3,7 +3,11 @@
 const express = require('express');
 const path = require('path');
 
+// Bind Express functions
 const app = express();
+
+// Implement json middleware
+app.use(express.json());
 
 // Bind public page route
 app.use(express.static(path.join(__dirname, 'public')));
