@@ -12,7 +12,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
 // Implement routes folder
-app.use('/apis', api);
+app.use('/api', api);
 
 // Bind public page route
 app.use(express.static(path.join(__dirname, 'public')));
