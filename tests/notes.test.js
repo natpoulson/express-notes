@@ -1,9 +1,9 @@
 // Declare required modules
 const fs = require('fs/promises');
 const request = require('supertest');
-const app = require('../server');
+const app = require('../app');
 
-const dataSet = async () => JSON.parse(await fs.readFile('../db/test.json', {encoding: 'utf-8'}));
+const dataSet = async () => JSON.parse(await fs.readFile('./db/test.json', {encoding: 'utf-8'}));
 
 describe('Notes API', () => {
     describe('GET', () => {
