@@ -90,6 +90,8 @@ notes.get('/apis/notes', (req, res) => {
     res.status(200).json(source);
 });
 
+// Routes
+// ------
 notes.get('/apis/notes/:id', (req, res) => {
     // Filter out queries that include non-numerical values
     if (!isValidID(req.params.id)) {
@@ -106,6 +108,12 @@ notes.get('/apis/notes/:id', (req, res) => {
     if (index === undefined) {
         res.status(403).send("Non-zero ID required");
         return;
+    }
+
+    // Handle out of range requests
+    if (index >= source.length) {
+        res.status(404).send(`No note found at ID ${req.params.id}`);
+        return
     }
 
     // Return the associated value
@@ -147,7 +155,36 @@ notes.post('/apis/notes', (req, res) => {
 });
 
 notes.delete('/apis/notes/:id', (req, res) => {
+    // Filter out queries that include non-numerical values
+    if (!isValidID(req.params.id)) {
+        res.status(403).send("Invalid ID, must be a number");
+        return;
+    }
 
+    // Load source file and parse the index
+    const debug = debugCheck(req);
+    const source = loadNotes(debug);
+    const index = parseIndex(req.params.id);
+
+    // Catch situations where the treated ID is -1 or lower (returns undefined in helper)
+    if (index === undefined) {
+        res.status(403).send("Non-zero ID required");
+        return;
+    }
+
+    // Handle out of range requests
+    if (index >= source.length) {
+        res.status(404).send(`No note found at ID ${req.params.id}`);
+        return
+    }
+
+    // Filter out note and store amended file
+    const output = source.filter((a, b) => {
+        return b !== index;
+    });
+    saveNotes(output, debug);
+
+    res.status(200).send(`Deleted note ${req.params.id} successfully`);
 });
 
 module.exports = notes;
