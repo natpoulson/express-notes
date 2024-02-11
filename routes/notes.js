@@ -84,7 +84,7 @@ function isNote(note) {
 }
 
 // Return all notes
-notes.get('/apis/notes', (req, res) => {
+notes.get('/', (req, res) => {
     const debug = debugCheck(req);
     const source = loadNotes(debug);
     res.status(200).json(source);
@@ -92,7 +92,7 @@ notes.get('/apis/notes', (req, res) => {
 
 // Routes
 // ------
-notes.get('/apis/notes/:id', (req, res) => {
+notes.get('/:id', (req, res) => {
     // Filter out queries that include non-numerical values
     if (!isValidID(req.params.id)) {
         res.status(403).send("Invalid ID, must be a number");
@@ -126,7 +126,7 @@ notes.get('/apis/notes/:id', (req, res) => {
     res.status(404).send(`No note found with ID ${req.params.id}`);
 });
 
-notes.post('/apis/notes', (req, res) => {
+notes.post('/', (req, res) => {
     // Screen out requests that don't have any body content
     if (!req.body) {
         res.status(403).send("No body detected in request");
@@ -154,7 +154,7 @@ notes.post('/apis/notes', (req, res) => {
     saveNotes(source, debug);
 });
 
-notes.delete('/apis/notes/:id', (req, res) => {
+notes.delete('/:id', (req, res) => {
     // Filter out queries that include non-numerical values
     if (!isValidID(req.params.id)) {
         res.status(403).send("Invalid ID, must be a number");

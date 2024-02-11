@@ -1,11 +1,11 @@
 // TODO: Add code for router function and connect routes
 const router = require('express').Router();
 
-const notes = require('./notes');
+const notes = require('./notes.js');
 
-router.use('/apis/notes', notes);
+router.use('/notes', notes);
 
-router.get('/apis', (req, res) => {
+router.get('/', (req, res) => {
     res.status(200).send("API accessible");
 });
 
