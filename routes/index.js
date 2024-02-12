@@ -6,7 +6,7 @@ const notes = require('./notes.js');
 router.use('/notes', notes);
 
 router.get('/', (req, res) => {
-    res.status(200).send("API accessible");
+    res.status(200).json({message: 'API OK'});
 });
 
 module.exports = router;
