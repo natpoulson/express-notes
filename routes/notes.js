@@ -4,8 +4,8 @@ const fs = require('fs');
 const path = require('path');
 
 const paths = {
-    prod: path.join(__dirname, "db/db.json"),
-    test: path.join(__dirname, 'db/test.json'),
+    prod: path.join(__dirname, "../db/db.json"),
+    test: path.join(__dirname, '../db/test.json'),
 }
 
 // Helper functions
