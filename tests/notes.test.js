@@ -9,16 +9,21 @@ describe('Notes API', () => {
     describe('GET', () => {
         it('/api/notes returns an array of notes', async () => {
             const sample = await dataSet();
+            const treatedSample = sample;
+            for (let i = 0; i < treatedSample.length; i++) {
+                treatedSample[i].id = i;
+            }
 
             const res = await request(app).get('/api/notes').set('x-is-test', 'true');
             expect(res.statusCode).toBe(200);
-            expect(JSON.stringify(res.body)).toEqual(JSON.stringify(sample));
+            expect(res.body).toEqual(treatedSample);
         });
         it('/api/notes/:id returns a specific note', async () => {
             const sample = await dataSet();
-            const res = await request(app).get('/api/notes/1').set('x-is-test', 'true');
+            const index = Math.floor(Math.random() * sample.length);
+            const res = await request(app).get(`/api/notes/${index}`).set('x-is-test', 'true');
             expect(res.statusCode).toBe(200);
-            expect(res.body).toEqual(sample[0]);
+            expect(res.body).toEqual(sample[index]);
         });
         it('/api/notes/:id returns an error when an invalid param is passed', async () => {
             const res = await request(app).get('/api/notes/z').set('x-is-test', 'true');
@@ -31,7 +36,7 @@ describe('Notes API', () => {
             const res = await request(app).post('/api/notes').set('x-is-test', 'true').send({title:"test", text:`${rand}`});
             expect(res.statusCode).toBe(200);
             const sample = await dataSet();
-            expect(res.body.text).toEqual(sample[sample.length - 1].text)
+            expect(res.body.text).toEqual(sample[(sample.length - 1)].text);
         });
         it('/api/notes rejects notes with no body/content', async () => {
             const res = await request(app).post('/api/notes').set('x-is-test', 'true');
