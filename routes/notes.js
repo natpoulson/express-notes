@@ -83,6 +83,19 @@ function isNote(note) {
     return false;
 }
 
+function jsonMsg(message, details = undefined) {
+    if (typeof details === 'undefined') {
+        return {
+            message: message
+        };
+    }
+    
+    return {
+        message: message,
+        details: details
+    };
+}
+
 // Return all notes
 notes.get('/', (req, res) => {
     const debug = debugCheck(req);
@@ -95,7 +108,7 @@ notes.get('/', (req, res) => {
 notes.get('/:id', (req, res) => {
     // Filter out queries that include non-numerical values
     if (!isValidID(req.params.id)) {
-        res.status(403).send("Invalid ID, must be a number");
+        res.status(403).json(jsonMsg("Invalid ID, must be a number"));
         return;
     }
 
@@ -106,13 +119,13 @@ notes.get('/:id', (req, res) => {
 
     // Catch situations where the treated ID is -1 or lower (returns undefined in helper)
     if (index === undefined) {
-        res.status(403).send("Non-zero ID required");
+        res.status(403).json(jsonMsg("Non-zero ID required"));
         return;
     }
 
     // Handle out of range requests
     if (index >= source.length) {
-        res.status(404).send(`No note found at ID ${req.params.id}`);
+        res.status(404).json(jsonMsg(`No note found at ID ${req.params.id}`));
         return
     }
 
@@ -123,19 +136,19 @@ notes.get('/:id', (req, res) => {
     }
 
     // Assume by this point if nothing else caught it, then we don't have anything at that index
-    res.status(404).send(`No note found with ID ${req.params.id}`);
+    res.status(404).json(jsonMsg(`No note found with ID ${req.params.id}`));
 });
 
 notes.post('/', (req, res) => {
     // Screen out requests that don't have any body content
     if (!req.body) {
-        res.status(403).send("No body detected in request");
+        res.status(403).json(jsonMsg("No body detected in request"));
         return;
     }
 
     // Screen out requests that have JSON objects lacking the required data
     if (!isNote(req.body)) {
-        res.status(403).send("Body does not match expected request format (must have 'title' and 'text' properties of type 'string')");
+        res.status(403).json(jsonMsg("Body does not match expected request format", "Must have 'title' and 'text' properties of type 'string'"));
         return;
     }
 
@@ -158,7 +171,7 @@ notes.post('/', (req, res) => {
 notes.delete('/:id', (req, res) => {
     // Filter out queries that include non-numerical values
     if (!isValidID(req.params.id)) {
-        res.status(403).send("Invalid ID, must be a number");
+        res.status(403).json(jsonMsg("Invalid ID, must be a number"));
         return;
     }
 
@@ -169,13 +182,13 @@ notes.delete('/:id', (req, res) => {
 
     // Catch situations where the treated ID is -1 or lower (returns undefined in helper)
     if (index === undefined) {
-        res.status(403).send("Non-zero ID required");
+        res.status(403).json(jsonMsg("Non-zero ID required"));
         return;
     }
 
     // Handle out of range requests
     if (index >= source.length) {
-        res.status(404).send(`No note found at ID ${req.params.id}`);
+        res.status(404).json(jsonMsg(`No note found at ID ${req.params.id}`));
         return
     }
 
@@ -185,7 +198,7 @@ notes.delete('/:id', (req, res) => {
     });
     saveNotes(output, debug);
 
-    res.status(200).send(`Deleted note ${req.params.id} successfully`);
+    res.status(200).json(jsonMsg(`ID: ${req.params.id} successfully`));
 });
 
 module.exports = notes;
