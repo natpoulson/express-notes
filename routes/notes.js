@@ -152,6 +152,7 @@ notes.post('/', (req, res) => {
 
     // Write back to the DB file
     saveNotes(source, debug);
+    res.status(200).json(data);
 });
 
 notes.delete('/:id', (req, res) => {

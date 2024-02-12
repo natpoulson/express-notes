@@ -48,7 +48,7 @@ describe('Notes API', () => {
             expect(sampleComparison.length).toBe((sample.length - 1));
         });
         it('/api/notes/:id returns an error when an invalid param is passed', async () => {
-            const res = await request(app).delete('/apinpm/notes/z').set('x-is-test', 'true');
+            const res = await request(app).delete('/api/notes/z').set('x-is-test', 'true');
             expect(res.statusCode).toBe(403);
         });
     });
