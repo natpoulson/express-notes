@@ -16,20 +16,20 @@ describe('Express.js', () => {
         });
     });
     describe('API Routes', () => {
-        it('GET /apis/notes exists', async () => {
-            const res = await request(app).get('/apis/notes');
+        it('GET /api/notes exists', async () => {
+            const res = await request(app).get('/api/notes');
             expect(res.statusCode).not.toBe(404);
         });
-        it('GET /apis/notes/:id exists', async () => {
-            const res = await request(app).get('/apis/notes/1');
+        it('GET /api/notes/:id exists', async () => {
+            const res = await request(app).get('/api/notes/z');
             expect(res.statusCode).not.toBe(404);
         });
-        it('POST /apis/notes exists', async () => {
-            const res = await request(app).post('/apis/notes');
+        it('POST /api/notes exists', async () => {
+            const res = await request(app).post('/api/notes');
             expect(res.statusCode).not.toBe(404);
         });
-        it('DELETE /apis/notes/:id exists', async () => {
-            const res = await request(app).delete('/apis/notes/z');
+        it('DELETE /api/notes/:id exists', async () => {
+            const res = await request(app).delete('/api/notes/z');
             expect(res.statusCode).not.toBe(404);
         });
     });

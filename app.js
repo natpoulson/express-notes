@@ -2,8 +2,17 @@
 // Otherwise it causes jest to hang indefinitely
 const express = require('express');
 const path = require('path');
+const api = require('./routes/index.js');
 
+// Bind Express functions
 const app = express();
+
+// Implement json and URL encoding middleware
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
+
+// Implement routes folder
+app.use('/api', api);
 
 // Bind public page route
 app.use(express.static(path.join(__dirname, 'public')));
