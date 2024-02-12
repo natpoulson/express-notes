@@ -60,17 +60,6 @@ function isValidID(id) {
     return true;
 }
 
-// Parse the index as a number and subtract from 1 to use in zero-index arrays
-// Return undefined if the adjusted index would be negative
-function parseIndex(index) {
-    const adjustedIndex = (Number.parseInt(index) - 1);
-    if (adjustedIndex < 0) {
-        return undefined;
-    }
-
-    return adjustedIndex;
-}
-
 function isNote(note) {
     // Make sure the note object has the required properties
     if (Object.keys(note).includes('title') && Object.keys(note).includes('text')) {
@@ -100,6 +89,9 @@ function jsonMsg(message, details = undefined) {
 notes.get('/', (req, res) => {
     const debug = debugCheck(req);
     const source = loadNotes(debug);
+    for (let i = 0; i < source.length; i++) {
+        source[i].id = i;
+    }
     res.status(200).json(source);
 });
 
@@ -115,7 +107,7 @@ notes.get('/:id', (req, res) => {
     // Load source file and parse the index
     const debug = debugCheck(req);
     const source = loadNotes(debug);
-    const index = parseIndex(req.params.id);
+    const index = Number.parseInt(req.params.id);
 
     // Catch situations where the treated ID is -1 or lower (returns undefined in helper)
     if (index === undefined) {
@@ -178,13 +170,7 @@ notes.delete('/:id', (req, res) => {
     // Load source file and parse the index
     const debug = debugCheck(req);
     const source = loadNotes(debug);
-    const index = parseIndex(req.params.id);
-
-    // Catch situations where the treated ID is -1 or lower (returns undefined in helper)
-    if (index === undefined) {
-        res.status(403).json(jsonMsg("Non-zero ID required"));
-        return;
-    }
+    const index = Number.parseInt(req.params.id);
 
     // Handle out of range requests
     if (index >= source.length) {
@@ -192,13 +178,11 @@ notes.delete('/:id', (req, res) => {
         return
     }
 
-    // Filter out note and store amended file
-    const output = source.filter((a, b) => {
-        return b !== index;
-    });
-    saveNotes(output, debug);
+    // Splice out specified index
+    source.splice(index, 1);
+    saveNotes(source, debug);
 
-    res.status(200).json(jsonMsg(`ID: ${req.params.id} successfully`));
+    res.status(200).json(jsonMsg(`Deleted ID: ${req.params.id} successfully`));
 });
 
 module.exports = notes;
