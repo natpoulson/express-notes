@@ -60,6 +60,7 @@ function isValidID(id) {
     return true;
 }
 
+// Checks if the objest passed contains the prerequisite fields for use as a note
 function isNote(note) {
     // Make sure the note object has the required properties
     if (Object.keys(note).includes('title') && Object.keys(note).includes('text')) {
@@ -72,6 +73,7 @@ function isNote(note) {
     return false;
 }
 
+// Turns one or more strings into a JSON message for standardised status responses.
 function jsonMsg(message, details = undefined) {
     if (typeof details === 'undefined') {
         return {
