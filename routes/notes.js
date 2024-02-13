@@ -60,17 +60,7 @@ function isValidID(id) {
     return true;
 }
 
-// Parse the index as a number and subtract from 1 to use in zero-index arrays
-// Return undefined if the adjusted index would be negative
-function parseIndex(index) {
-    const adjustedIndex = (Number.parseInt(index) - 1);
-    if (adjustedIndex < 0) {
-        return undefined;
-    }
-
-    return adjustedIndex;
-}
-
+// Checks if the objest passed contains the prerequisite fields for use as a note
 function isNote(note) {
     // Make sure the note object has the required properties
     if (Object.keys(note).includes('title') && Object.keys(note).includes('text')) {
@@ -83,10 +73,27 @@ function isNote(note) {
     return false;
 }
 
+// Turns one or more strings into a JSON message for standardised status responses.
+function jsonMsg(message, details = undefined) {
+    if (typeof details === 'undefined') {
+        return {
+            message: message
+        };
+    }
+    
+    return {
+        message: message,
+        details: details
+    };
+}
+
 // Return all notes
 notes.get('/', (req, res) => {
     const debug = debugCheck(req);
     const source = loadNotes(debug);
+    for (let i = 0; i < source.length; i++) {
+        source[i].id = i + 1;
+    }
     res.status(200).json(source);
 });
 
@@ -95,24 +102,24 @@ notes.get('/', (req, res) => {
 notes.get('/:id', (req, res) => {
     // Filter out queries that include non-numerical values
     if (!isValidID(req.params.id)) {
-        res.status(403).send("Invalid ID, must be a number");
+        res.status(403).json(jsonMsg("Invalid ID, must be a number"));
         return;
     }
 
     // Load source file and parse the index
     const debug = debugCheck(req);
     const source = loadNotes(debug);
-    const index = parseIndex(req.params.id);
+    const index = Number.parseInt(req.params.id);
 
-    // Catch situations where the treated ID is -1 or lower (returns undefined in helper)
-    if (index === undefined) {
-        res.status(403).send("Non-zero ID required");
+    // Catch situations where the ID is less than 1
+    if (index < 1) {
+        res.status(404).json(jsonMsg("Non-zero ID required"));
         return;
     }
 
     // Handle out of range requests
-    if (index >= source.length) {
-        res.status(404).send(`No note found at ID ${req.params.id}`);
+    if (index > source.length) {
+        res.status(404).json(jsonMsg(`No note found at ID ${req.params.id}`));
         return
     }
 
@@ -123,19 +130,19 @@ notes.get('/:id', (req, res) => {
     }
 
     // Assume by this point if nothing else caught it, then we don't have anything at that index
-    res.status(404).send(`No note found with ID ${req.params.id}`);
+    res.status(404).json(jsonMsg(`No note found with ID ${req.params.id}`));
 });
 
 notes.post('/', (req, res) => {
     // Screen out requests that don't have any body content
     if (!req.body) {
-        res.status(403).send("No body detected in request");
+        res.status(403).json(jsonMsg("No body detected in request"));
         return;
     }
 
     // Screen out requests that have JSON objects lacking the required data
     if (!isNote(req.body)) {
-        res.status(403).send("Body does not match expected request format (must have 'title' and 'text' properties of type 'string')");
+        res.status(403).json(jsonMsg("Body does not match expected request format", "Must have 'title' and 'text' properties of type 'string'"));
         return;
     }
 
@@ -158,34 +165,31 @@ notes.post('/', (req, res) => {
 notes.delete('/:id', (req, res) => {
     // Filter out queries that include non-numerical values
     if (!isValidID(req.params.id)) {
-        res.status(403).send("Invalid ID, must be a number");
+        res.status(403).json(jsonMsg("Invalid ID, must be a number"));
+        return;
+    }
+
+    if (Number.parseInt(req.params.id) < 1) {
+        res.status(404).json(jsonMsg("ID must be 1 or greater"));
         return;
     }
 
     // Load source file and parse the index
     const debug = debugCheck(req);
     const source = loadNotes(debug);
-    const index = parseIndex(req.params.id);
-
-    // Catch situations where the treated ID is -1 or lower (returns undefined in helper)
-    if (index === undefined) {
-        res.status(403).send("Non-zero ID required");
-        return;
-    }
+    const index = Number.parseInt(req.params.id);
 
     // Handle out of range requests
-    if (index >= source.length) {
-        res.status(404).send(`No note found at ID ${req.params.id}`);
+    if (index > source.length) {
+        res.status(404).json(jsonMsg(`No note found at ID ${req.params.id}`));
         return
     }
 
-    // Filter out note and store amended file
-    const output = source.filter((a, b) => {
-        return b !== index;
-    });
-    saveNotes(output, debug);
+    // Splice out specified index
+    source.splice((index - 1), 1);
+    saveNotes(source, debug);
 
-    res.status(200).send(`Deleted note ${req.params.id} successfully`);
+    res.status(200).json(jsonMsg(`Deleted ID: ${req.params.id} successfully`));
 });
 
 module.exports = notes;
