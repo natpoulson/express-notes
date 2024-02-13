@@ -11,7 +11,7 @@ describe('Notes API', () => {
             const sample = await dataSet();
             const treatedSample = sample;
             for (let i = 0; i < treatedSample.length; i++) {
-                treatedSample[i].id = i;
+                treatedSample[i].id = i + 1;
             }
 
             const res = await request(app).get('/api/notes').set('x-is-test', 'true');
@@ -20,7 +20,7 @@ describe('Notes API', () => {
         });
         it('/api/notes/:id returns a specific note', async () => {
             const sample = await dataSet();
-            const index = Math.floor(Math.random() * sample.length);
+            const index = Math.ceil(Math.random() * (sample.length - 1));
             const res = await request(app).get(`/api/notes/${index}`).set('x-is-test', 'true');
             expect(res.statusCode).toBe(200);
             expect(res.body).toEqual(sample[index]);
@@ -46,7 +46,7 @@ describe('Notes API', () => {
     describe('DELETE', () =>  {
         it('/api/notes/:id deletes the specified note', async () => {
             const sample = await dataSet();
-            const targetIndex = Math.ceil(Math.random() * sample.length);
+            const targetIndex = Math.ceil(Math.random() * (sample.length - 1));
             const res = await request(app).delete(`/api/notes/${targetIndex}`).set('x-is-test', 'true');
             expect(res.statusCode).toBe(200);
             const sampleComparison = await dataSet();

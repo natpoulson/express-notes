@@ -92,7 +92,7 @@ notes.get('/', (req, res) => {
     const debug = debugCheck(req);
     const source = loadNotes(debug);
     for (let i = 0; i < source.length; i++) {
-        source[i].id = i;
+        source[i].id = i + 1;
     }
     res.status(200).json(source);
 });
@@ -111,14 +111,14 @@ notes.get('/:id', (req, res) => {
     const source = loadNotes(debug);
     const index = Number.parseInt(req.params.id);
 
-    // Catch situations where the treated ID is -1 or lower (returns undefined in helper)
-    if (index === undefined) {
-        res.status(403).json(jsonMsg("Non-zero ID required"));
+    // Catch situations where the ID is less than 1
+    if (index < 1) {
+        res.status(404).json(jsonMsg("Non-zero ID required"));
         return;
     }
 
     // Handle out of range requests
-    if (index >= source.length) {
+    if (index > source.length) {
         res.status(404).json(jsonMsg(`No note found at ID ${req.params.id}`));
         return
     }
@@ -169,19 +169,24 @@ notes.delete('/:id', (req, res) => {
         return;
     }
 
+    if (Number.parseInt(req.params.id) < 1) {
+        res.status(404).json(jsonMsg("ID must be 1 or greater"));
+        return;
+    }
+
     // Load source file and parse the index
     const debug = debugCheck(req);
     const source = loadNotes(debug);
     const index = Number.parseInt(req.params.id);
 
     // Handle out of range requests
-    if (index >= source.length) {
+    if (index > source.length) {
         res.status(404).json(jsonMsg(`No note found at ID ${req.params.id}`));
         return
     }
 
     // Splice out specified index
-    source.splice(index, 1);
+    source.splice((index - 1), 1);
     saveNotes(source, debug);
 
     res.status(200).json(jsonMsg(`Deleted ID: ${req.params.id} successfully`));
